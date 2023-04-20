@@ -1,0 +1,232 @@
+menu "Sunplus image build"
+
+choice
+	prompt "Board"
+	config BR2_SP_BOARD_SP7350
+		bool "SP7350"
+
+	config BR2_SP_BOARD_Q645
+		bool "Q645"
+
+	config BR2_SP_BOARD_BPI_F2S
+		bool "Bpi-F2S"
+
+	config BR2_SP_BOARD_BPI_F2P
+		bool "Bpi-F2P"
+
+	config BR2_SP_BOARD_DEMOV3
+		bool "DemoV3"
+endchoice
+
+choice
+	prompt "Boot type"
+	config BR2_SP_BOOT_TYPE_EMMC
+		bool "eMMC"
+
+	config BR2_SP_BOOT_TYPE_SDCARD
+		bool "SDCard"
+endchoice
+
+config BR2_LINUX_PREBUILT_KERNEL
+	bool "Pre-built kernel version"
+
+if BR2_LINUX_PREBUILT_KERNEL
+
+	choice
+		prompt "Pre-built kernel version"
+		config BR2_SP_LINUX_KERNEL_510
+		bool "version (5.10)"
+		depends on BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645
+
+		config BR2_SP_LINUX_KERNEL_54
+		bool "version (5.4)"
+		depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
+
+		config BR2_SP_LINUX_KERNEL_419
+		bool "version (4.19)"
+		depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
+	endchoice
+
+endif
+
+if ! BR2_LINUX_PREBUILT_KERNEL
+	choice
+		prompt "Build kernel version"
+	config BR2_SP_LINUX_BUILD_KERNEL_510
+		bool "version (5.10)"
+		depends on BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645
+
+	config BR2_SP_LINUX_BUILD_KERNEL_54
+		bool "version (5.4)"
+		depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
+
+	config BR2_SP_LINUX_BUILD_KERNEL_419
+		bool "version (4.19)"
+		depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
+	endchoice
+endif
+
+choice
+	prompt "Root Filesystem"
+
+config BR2_SP_TARGET_ROOTFS_NATIVE
+	bool "buildroot"
+
+config BR2_SP_TARGET_ROOTFS_64_RPI_202209_DESKTOP
+	bool "2022-09-22-raspios-bullseye-arm64"
+	depends on !BR2_SP_BOOT_TYPE_EMMC && (BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350)
+
+config BR2_SP_TARGET_ROOTFS_64_RPI_202209_LITE
+	bool "2022-09-22-raspios-bullseye-arm64-lite"
+	depends on !BR2_SP_BOOT_TYPE_EMMC && (BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350)
+
+# config BR2_SP_TARGET_ROOTFS_64_UMT_2204_DESKTOP
+# 	bool "ubuntu-mate-22.04-desktop-arm64+raspi"
+# 	depends on BR2_SP_BOARD_Q645
+
+# config BR2_SP_TARGET_ROOTFS_64_UMT_2204_SERVER
+# 	bool "ubuntu-22.04-preinstalled-server-arm64+raspi"
+# 	depends on BR2_SP_BOARD_Q645
+
+config BR2_SP_TARGET_ROOTFS_64_UMT_2004_SERVER
+	bool "ubuntu-20.04.4-preinstalled-server-arm64+raspi"
+	depends on !BR2_SP_BOOT_TYPE_EMMC && (BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350)
+
+config BR2_SP_TARGET_ROOTFS_64_UMT_2004_DESKTOP
+	bool "ubuntu-mate-20.04.1-desktop-arm64+raspi"
+	depends on !BR2_SP_BOOT_TYPE_EMMC && (BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350)
+
+config BR2_SP_TARGET_ROOTFS_32_UMT_2004_DESKTOP
+	bool "ubuntu-mate-20.04.1-desktop-armhf+raspi.img.xz"
+	depends on !BR2_SP_BOOT_TYPE_EMMC && (!(BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350))
+
+config BR2_SP_TARGET_ROOTFS_32_UMT_2004_SERVER
+	bool "ubuntu-20.04.2-preinstalled-server-armhf+raspi.img.xz"
+	depends on !BR2_SP_BOOT_TYPE_EMMC && (!(BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350))
+
+config BR2_SP_TARGET_ROOTFS_32_RPI_K54
+	bool "2020-08-20-raspios-buster-armhf.zip"
+	depends on !BR2_SP_BOOT_TYPE_EMMC && (!(BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350))
+
+config BR2_SP_TARGET_ROOTFS_32_RPI_K49
+	bool "2020-05-27-raspios-buster-armhf"
+	depends on !BR2_SP_BOOT_TYPE_EMMC && (!(BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350))
+	depends on BR2_SP_LINUX_KERNEL_419
+
+# config BR2_SP_TARGET_ROOTFS_CUSTOM
+# 	bool "custom"
+
+endchoice
+
+
+if BR2_SP_TARGET_ROOTFS_NATIVE
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+
+endif
+
+if BR2_SP_TARGET_ROOTFS_64_RPI_202209_DESKTOP
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2022-09-26/2022-09-22-raspios-bullseye-arm64.img.xz"
+
+endif
+
+if BR2_SP_TARGET_ROOTFS_64_RPI_202209_LITE
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-09-26/2022-09-22-raspios-bullseye-arm64-lite.img.xz"
+
+endif
+
+if BR2_SP_TARGET_ROOTFS_64_UMT_2204_SERVER
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://old-releases.ubuntu.com/releases/22.04/ubuntu-22.04-preinstalled-server-arm64+raspi.img.xz"
+
+endif
+
+if BR2_SP_TARGET_ROOTFS_64_UMT_2204_DESKTOP
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://old-releases.ubuntu.com/releases/22.04/ubuntu-22.04-preinstalled-desktop-arm64+raspi.img.xz"
+
+endif
+
+if BR2_SP_TARGET_ROOTFS_64_UMT_2004_SERVER
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://old-releases.ubuntu.com/releases/focal/ubuntu-20.04.4-preinstalled-server-arm64+raspi.img.xz"
+
+endif
+
+if BR2_SP_TARGET_ROOTFS_64_UMT_2004_DESKTOP
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://releases.ubuntu-mate.org/20.04/arm64/ubuntu-mate-20.04.1-desktop-arm64+raspi.img.xz"
+
+endif
+
+if BR2_SP_TARGET_ROOTFS_32_UMT_2204_SERVER
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://old-releases.ubuntu.com/releases/22.04/ubuntu-22.04-preinstalled-server-armhf+raspi.img.xz"
+
+endif
+
+if BR2_SP_TARGET_ROOTFS_32_UMT_2204_DESKTOP
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://old-releases.ubuntu.com/releases/22.04/ubuntu-mate-22.04-desktop-armhf+raspi.img.xz"
+endif
+
+if BR2_SP_TARGET_ROOTFS_32_UMT_2004_DESKTOP
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://releases.ubuntu-mate.org/20.04/armhf/ubuntu-mate-20.04.1-desktop-armhf+raspi.img.xz"
+endif
+
+if BR2_SP_TARGET_ROOTFS_32_UMT_2004_SERVER
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://old-releases.ubuntu.com/releases/focal/ubuntu-20.04.2-preinstalled-server-armhf+raspi.img.xz"
+endif
+
+
+if BR2_SP_TARGET_ROOTFS_32_RPI_K54 
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	# default "https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-01-12/2021-01-11-raspios-buster-armhf.zip"
+	default "https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2020-08-24/2020-08-20-raspios-buster-armhf.zip"
+	# default "https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2022-09-26/2022-09-22-raspios-bullseye-armhf.img.xz"
+endif
+
+if BR2_SP_TARGET_ROOTFS_32_RPI_K419
+
+config BR2_SP_ROOTFS_REPO_URL
+	string 
+	default "https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2020-05-28/2020-05-27-raspios-buster-armhf.zip"
+
+endif
+
+if BR2_SP_TARGET_ROOTFS_CUSTOM 
+
+config BR2_SP_ROOTFS_REPO_URL
+	prompt "URL of custom image path"
+	default ""
+
+endif
+
+endmenu
