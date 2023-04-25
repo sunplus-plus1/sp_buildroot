@@ -3,19 +3,19 @@ menu "Sunplus image build"
 choice
 	prompt "Board"
 	config BR2_SP_BOARD_SP7350
-		bool "SP7350"
+		bool "SP7350 EV board"
 
 	config BR2_SP_BOARD_Q645
-		bool "Q645"
+		bool "Q645 EV board"
 
 	config BR2_SP_BOARD_BPI_F2S
-		bool "Bpi-F2S"
+		bool "SP7021 BPI-F2S board"
 
 	config BR2_SP_BOARD_BPI_F2P
-		bool "Bpi-F2P"
+		bool "SP7021 BPI-F2P board"
 
 	config BR2_SP_BOARD_DEMOV3
-		bool "DemoV3"
+		bool "SP7021 DemoV3 board"
 endchoice
 
 choice

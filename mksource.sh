@@ -8,15 +8,15 @@ XBOOT_CONFIG_FILE_PATH=boot/xboot/.config
 
 select_dram() {
 	echo ""	
-	echo "select DRAM type:"
-	echo "1. NT6AN1024F32AV"
-	echo "2. MT53D1024M32D4 (D9WHT)"
-	echo "3. MT53E1G32D2_A (D9ZQX)"
-	echo "4. MT53E1G32D2_B (D8CJG)"
-	echo "5. MT40A2G16SKL_B (D9XQF)"
-	echo "6. MT41K512M16VRP (D9ZWN)"
-	echo "7. K4AAG165WA"
-	echo "8. K4B8G1646D"
+	echo "Select DRAM type:"
+	echo "1. Nanya, LPDDR4, 32Gb, x32, 2 ranks, NT6AN1024F32AV"
+	echo "2. Micron, LPDDR4, 32Gb, x32, 2 ranks, MT53D1024M32D4 (D9WHT)"
+	echo "3. Micron, LPDDR4, 32Gb, x32, 1 rank, MT53E1G32D2_A (D9ZQX)"
+	echo "4. Micron, LPDDR4, 32Gb, x32, 2 ranks, MT53E1G32D2_B (D8CJG)"
+	echo "5. Micron, DDR4, 32Gb, x16, 1 rank, MT40A2G16SKL_B (D9XQF)"
+	echo "6. Micron, DDR3, 8Gb, x16, 1 rank, MT41K512M16VRP (D9ZWN)"
+	echo "7. Samsung, DDR4, 16Gb, x16, 1 rank, K4AAG165WA"
+	echo "8. Samsung, DDR3, 8Gb, x16, 2 ranks, K4B8G1646D"
 	echo ""	
 	read -p "Whitch one is on your Board? " sel_dram
 

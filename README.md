@@ -8,25 +8,25 @@ enter to your buildroot directory
 cd buildroot-2022.11/
 ```
 >#### 2). make default config
-if you using bpi/demo_v3 please : 
+If you are using SP7021 BPI-F2S, BPI-F2P or DemoV3 boards, please: 
 ```bash
 make sp_bpi_xxx_defconfig
 ```
-if you using Q645/Q654 please :
+If you are using Q645 EV board or SP7350 EV board, please:
 ```bash
 make sp_q6xx_defconfig
 ```
 >#### 3). make menuconfig
-* select your EV board.
+* Select your target board.
 * select your boot type.
 * select kernel. 
     * pre-built kernel
     * non pre-built
         * it's will download latest source code from Github to build
-* select root filesystem.
-    * native. (it's will build rootfs of buildroot)
-    * ubuntu. 
-    * raspberry pi.
+* Select root file-system:
+    * Buildroot. (it's will build rootfs of buildroot)
+    * Ubuntu MATE. 
+    * Raspbian OS.
 
 ![](pic/kconfig0.png)
 
