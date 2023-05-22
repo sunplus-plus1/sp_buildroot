@@ -1,11 +1,17 @@
 #!/bin/bash
 if [ "${DEBUG}" == "y" ]; then set -x; fi
+HOSTNAME=`hostname`
+SUDO=sudo
+
+if [ "${HOSTNAME}" == "scdiu2" ] || [ "${HOSTNAME}" == "scdiu3" ]; then
+	SUDO=
+fi
 
 do_umount() {
-	mountpoint -q ${ROOT_DIR_IN} && sudo umount ${ROOT_DIR_IN}
-	mountpoint -q ${BOOT_DIR_IN} && sudo umount ${BOOT_DIR_IN}
-	mountpoint -q ${FAT_IMG_DIR} && sudo umount ${FAT_IMG_DIR}
-	mountpoint -q ${ROOT_IMG_DIR} && sudo umount ${ROOT_IMG_DIR}
+	mountpoint -q ${ROOT_DIR_IN} && ${SUDO} umount ${ROOT_DIR_IN}
+	mountpoint -q ${BOOT_DIR_IN} && ${SUDO} umount ${BOOT_DIR_IN}
+	mountpoint -q ${FAT_IMG_DIR} && ${SUDO} umount ${FAT_IMG_DIR}
+	mountpoint -q ${ROOT_IMG_DIR} && ${SUDO} umount ${ROOT_IMG_DIR}
 }
 # trap do_umount INT
 trap do_umount EXIT
@@ -16,7 +22,7 @@ do_int() {
 trap do_int INT
 
 RESRC_DIR=build/tools/sdcard_boot
-MKFS="sudo mke2fs"
+MKFS="${SUDO} mke2fs"
 RESIZE=resize2fs
 OUTPATH=.
 ISBUILDSRC=$1
@@ -74,7 +80,7 @@ KMODULE=`ls  ${KERNEL_DIR} | grep "5\."`
 
 if [ "${NATIVE_ROOTFS}" == "1" ]; then
 	BOOT_DIR_IN=${FAT_FILE_IN}
-	sudo mount -t ext4 ${ROOT_IMG_IN} ${ROOT_DIR_IN}
+	${SUDO} mount -t ext4 ${ROOT_IMG_IN} ${ROOT_DIR_IN}
 else
 	FAT_IMG_SIZE_M=256
 	fdisk -lu ${ROOT_IMG_IN}
@@ -84,7 +90,7 @@ else
 	LINUX_SLBA=`fdisk -lu ${ROOT_IMG_IN} | grep Linux | awk '{print $2}'`
 	LINUX_SPOS=$((${LINUX_SLBA}*512))
 	FAT32_SPOS=$((${FAT32_SLBA}*512))
-	sudo mount -t vfat -o loop,rw,sync,offset=${FAT32_SPOS} ${ROOT_IMG_IN} ${BOOT_DIR_IN}
+	${SUDO} mount -t vfat -o loop,rw,sync,offset=${FAT32_SPOS} ${ROOT_IMG_IN} ${BOOT_DIR_IN}
 fi
 
 if [ "$?" != "0" ]; then
@@ -140,22 +146,22 @@ fi
 
 # mount fat.img and copy boot files to it
 
-sudo mount -t vfat ${FAT_IMG_OUT} ${FAT_IMG_DIR}
+${SUDO} mount -t vfat ${FAT_IMG_OUT} ${FAT_IMG_DIR}
 if [ "$?" != "0" ]; then
     exit  1
 fi
 
-sudo cp -r ${BOOT_DIR_IN}/* ${FAT_IMG_DIR}
-sudo cp "$FAT_FILE_IN/ISPBOOOT.BIN" "$FAT_FILE_IN/uEnv.txt" "$FAT_FILE_IN/uImage" "$FAT_FILE_IN/u-boot.img" ${FAT_IMG_DIR}
-sudo umount ${FAT_IMG_DIR}
+${SUDO} cp -r ${BOOT_DIR_IN}/* ${FAT_IMG_DIR}
+${SUDO} cp "$FAT_FILE_IN/ISPBOOOT.BIN" "$FAT_FILE_IN/uEnv.txt" "$FAT_FILE_IN/uImage" "$FAT_FILE_IN/u-boot.img" ${FAT_IMG_DIR}
+${SUDO} umount ${FAT_IMG_DIR}
 
 # Offset boot partition (FAT32)
 dd if="$FAT_IMG_OUT" of="$OUT_FILE" bs="$seek_bs" seek="$seek_offset"
 rm -f "$FAT_IMG_OUT"
 
 if [ "${NATIVE_ROOTFS}" != "1" ]; then
-	sudo umount ${BOOT_DIR_IN}
-	sudo mount -t ext4 -o loop,rw,sync,offset=${LINUX_SPOS} ${ROOT_IMG_IN} ${ROOT_DIR_IN}	
+	${SUDO} umount ${BOOT_DIR_IN}
+	${SUDO} mount -t ext4 -o loop,rw,sync,offset=${LINUX_SPOS} ${ROOT_IMG_IN} ${ROOT_DIR_IN}	
 fi
 
 if [ "$?" != "0" ]; then
@@ -163,7 +169,7 @@ if [ "$?" != "0" ]; then
 fi
 
 # Calculate size of root partition (assume 40% + 20MB overhead).
-sz=`sudo du -sb $ROOT_DIR_IN | cut -f1`
+sz=`${SUDO} du -sb $ROOT_DIR_IN | cut -f1`
 sz=$((sz*14/10))
 partition_size_2=$(((sz/1024/1024)+500))
 
@@ -196,20 +202,20 @@ fi
 # Create root partition (ext4)
 # Copy 'rc.sdcardboot' to '/etc/init.d' of root partition.
 
-sudo mount -t ext4 ${ROOT_IMG} ${ROOT_IMG_DIR}
+${SUDO} mount -t ext4 ${ROOT_IMG} ${ROOT_IMG_DIR}
 
-sudo chmod 777 ${ROOT_IMG_DIR}/bin/busybox
+${SUDO} chmod 777 ${ROOT_IMG_DIR}/bin/busybox
 RC_SDCARDBOOTDIR=${ROOT_IMG_DIR}/etc/init.d
 RC_SDCARDBOOTFILE=${RESRC_DIR}/rc.sdcardboot
 
-sudo cp -rf $RC_SDCARDBOOTFILE $RC_SDCARDBOOTDIR
-sudo cp -rf ${KERNEL_DIR}/${KMODULE}  ${ROOT_IMG_DIR}/lib/modules/
+${SUDO} cp -rf $RC_SDCARDBOOTFILE $RC_SDCARDBOOTDIR
+${SUDO} cp -rf ${KERNEL_DIR}/${KMODULE}  ${ROOT_IMG_DIR}/lib/modules/
 
 if [ "${NATIVE_ROOTFS}" != "1" ]; then
 	mktools/adduser.sh ${ROOT_IMG_DIR}
 fi
 
-sudo umount ${ROOT_IMG_DIR}
+${SUDO} umount ${ROOT_IMG_DIR}
 
 # Resize to minimum + 10%. resize2fs version needs to bigger than 1.45.1.
 # partition_sz_2=`$RESIZE -P $ROOT_IMG | cut -d: -f2`

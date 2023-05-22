@@ -15,7 +15,9 @@ if [ ! -f "${SDK_DL_DIR}/${SDK_ROOTFS_FILE}.download" ]; then
     if [ "${DL_METHOD}" == "wget" ]; then
         wget --passive-ftp -nd -t 3 -O ${SDK_DL_DIR}/${SDK_ROOTFS_FILE}.${SDK_ROOTFS_FILE_EXT} ${ROOTFS_REPO_URL} 
     elif [ "${DL_METHOD}" == "git" ]; then
-        git clone ${ROOTFS_REPO_URL}
+        if [ ! -d "${SDK_ROOTFS_FILE}" ]; then
+            git clone ${ROOTFS_REPO_URL}
+        fi
     else
         echo "${DL_METHOD} not supportted"
         exit 1
@@ -24,7 +26,7 @@ if [ ! -f "${SDK_DL_DIR}/${SDK_ROOTFS_FILE}.download" ]; then
     if [ $? -eq 0 ]; then 
         touch ${SDK_DL_DIR}/${SDK_ROOTFS_FILE}.download
     else
-        echo "wget fail"
+        echo ">>>>> downloading failed"
         exit 1
     fi 
     echo ">>>>> done ..."

@@ -36,15 +36,15 @@ if BR2_LINUX_PREBUILT_KERNEL
 		prompt "Pre-built kernel version"
 		config BR2_SP_LINUX_KERNEL_510
 		bool "version (5.10)"
-		depends on BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645
+		depends on BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645 || BR2_SP_BOARD_BPI_F2S || BR2_SP_BOARD_BPI_F2P || BR2_SP_BOARD_DEMOV3
 
 		config BR2_SP_LINUX_KERNEL_54
 		bool "version (5.4)"
 		depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
 
-		config BR2_SP_LINUX_KERNEL_419
-		bool "version (4.19)"
-		depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
+		# config BR2_SP_LINUX_KERNEL_419
+		# bool "version (4.19)"
+		# depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
 	endchoice
 
 endif
@@ -54,15 +54,15 @@ if ! BR2_LINUX_PREBUILT_KERNEL
 		prompt "Build kernel version"
 	config BR2_SP_LINUX_BUILD_KERNEL_510
 		bool "version (5.10)"
-		depends on BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645
+		depends on BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645 || BR2_SP_BOARD_BPI_F2S || BR2_SP_BOARD_BPI_F2P || BR2_SP_BOARD_DEMOV3
 
 	config BR2_SP_LINUX_BUILD_KERNEL_54
 		bool "version (5.4)"
 		depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
 
-	config BR2_SP_LINUX_BUILD_KERNEL_419
-		bool "version (4.19)"
-		depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
+	# config BR2_SP_LINUX_BUILD_KERNEL_419
+	# 	bool "version (4.19)"
+	# 	depends on !(BR2_SP_BOARD_SP7350 || BR2_SP_BOARD_Q645)
 	endchoice
 endif
 
@@ -104,14 +104,14 @@ config BR2_SP_TARGET_ROOTFS_32_UMT_2004_SERVER
 	bool "ubuntu-20.04.2-preinstalled-server-armhf+raspi.img.xz"
 	depends on !BR2_SP_BOOT_TYPE_EMMC && (!(BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350))
 
-config BR2_SP_TARGET_ROOTFS_32_RPI_K54
+config BR2_SP_TARGET_ROOTFS_32_RPI_K54_DESKTOP
 	bool "2020-08-20-raspios-buster-armhf.zip"
 	depends on !BR2_SP_BOOT_TYPE_EMMC && (!(BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350))
 
-config BR2_SP_TARGET_ROOTFS_32_RPI_K49
-	bool "2020-05-27-raspios-buster-armhf"
-	depends on !BR2_SP_BOOT_TYPE_EMMC && (!(BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350))
-	depends on BR2_SP_LINUX_KERNEL_419
+# config BR2_SP_TARGET_ROOTFS_32_RPI_K49_DESKTOP
+# 	bool "2020-05-27-raspios-buster-armhf"
+# 	depends on !BR2_SP_BOOT_TYPE_EMMC && (!(BR2_SP_BOARD_Q645 || BR2_SP_BOARD_SP7350))
+# 	depends on BR2_SP_LINUX_KERNEL_419
 
 # config BR2_SP_TARGET_ROOTFS_CUSTOM
 # 	bool "custom"
@@ -204,7 +204,7 @@ config BR2_SP_ROOTFS_REPO_URL
 endif
 
 
-if BR2_SP_TARGET_ROOTFS_32_RPI_K54 
+if BR2_SP_TARGET_ROOTFS_32_RPI_K54_DESKTOP 
 
 config BR2_SP_ROOTFS_REPO_URL
 	string 

@@ -49,6 +49,7 @@ define download_rootfs
 	$(SP_IMB_ROOTFS_FILE) \
 	$(SP_IMB_ROOTFS_FILE_EXT) \
 	$(BR2_SP_ROOTFS_REPO_URL) \
+	wget \
 	$(SP_IMB_KERNEL_VER)
 endef
 
@@ -132,7 +133,7 @@ sp_build: check_mktool check_qemu_arm64 check_native
 	$(if $(BR2_SP_TARGET_ROOTFS_NATIVE),$(call use_native_rootfs))
 	$(if $(BR2_SP_TARGET_ROOTFS_64_RPI_202209_DESKTOP),$(call use_ext_rootfs,rpi))
 	$(if $(BR2_SP_TARGET_ROOTFS_64_RPI_202209_LITE),$(call use_ext_rootfs,rpi))
-	$(if $(BR2_SP_TARGET_ROOTFS_32_RPI_K419),$(call use_ext_rootfs,rpi))
+	$(if $(BR2_SP_TARGET_ROOTFS_32_RPI_K54_DESKTOP),$(call use_ext_rootfs,rpi))
 	$(if $(BR2_SP_TARGET_ROOTFS_32_UMT_2004_SERVER),$(call use_ext_rootfs,umt))
 	$(if $(BR2_SP_TARGET_ROOTFS_32_UMT_2004_DESKTOP),$(call use_ext_rootfs,umt))
 	$(if $(BR2_SP_TARGET_ROOTFS_64_UMT_2004_SERVER),$(call use_ext_rootfs,umt))

@@ -31,6 +31,10 @@ make sp_q6xx_defconfig
 ![](pic/kconfig0.png)
 
 >#### 4). sunplus image build
+Please install:
+```bash
+sudo apt install binfmt-support qemu-system qemu-user qemu-user-static
+```
 ```bash
 make sp_build
 ```
