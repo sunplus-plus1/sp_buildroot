@@ -19,10 +19,15 @@ if [ ! -f "${BR_FILE_XZ}" ]; then
 fi
 
 if [ ! -d "${BUILDROOTPATH}/${BR_FILE}" ]; then
-    read -p "extract to?(${CURRENT_DIR}) " BUILDROOTPATH
-    if [ "${BUILDROOTPATH}" == "" ]; then
-        BUILDROOTPATH=${CURRENT_DIR}
-    fi
+    while read -p "Which path to extract to? (${CURRENT_DIR}) " -r BUILDROOTPATH; do
+        if [ "${BUILDROOTPATH}" == "" ] || [ "${BUILDROOTPATH}" == "y" ]; then
+            BUILDROOTPATH=${CURRENT_DIR}
+            break
+        fi
+        if [ -d "${BUILDROOTPATH}" ]; then
+            break
+        fi
+    done
     tar -xf ${BR_FILE_XZ} -C ${BUILDROOTPATH}        
 fi
 

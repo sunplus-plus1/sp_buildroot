@@ -3,7 +3,7 @@ if [ "${DEBUG}" == "y" ]; then set -x; fi
 HOSTNAME=`hostname`
 SUDO=sudo
 
-if [ "${HOSTNAME}" == "scdiu2" ] || [ "${HOSTNAME}" == "scdiu3" ]; then
+if [ -f "/.podmanenv" ]; then
 	SUDO=
 fi
 
