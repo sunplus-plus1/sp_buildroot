@@ -13,7 +13,7 @@ if [ ! -f "${SDK_DL_DIR}/${SDK_ROOTFS_FILE}.download" ]; then
     echo ">>>>> downloading ..."
 
     if [ "${DL_METHOD}" == "wget" ]; then
-        wget --passive-ftp -nd -t 3 -O ${SDK_DL_DIR}/${SDK_ROOTFS_FILE}.${SDK_ROOTFS_FILE_EXT} ${ROOTFS_REPO_URL} 
+        wget --no-check-certificate --passive-ftp -nd -t 3 -O ${SDK_DL_DIR}/${SDK_ROOTFS_FILE}.${SDK_ROOTFS_FILE_EXT} ${ROOTFS_REPO_URL} 
     elif [ "${DL_METHOD}" == "git" ]; then
         if [ ! -d "${SDK_ROOTFS_FILE}" ]; then
             git clone ${ROOTFS_REPO_URL}

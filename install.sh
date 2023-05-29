@@ -14,7 +14,10 @@ BUILDROOTPATH=${CURRENT_DIR}
 
 if [ ! -f "${BR_FILE_XZ}" ]; then
     echo -e "\n>>> download buildroot ..."
-    wget --passive-ftp -nd -t 3 ${BUILDROOT_SITE}
+    wget --no-check-certificate --passive-ftp -nd -t 3 ${BUILDROOT_SITE}
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
     echo -e "\n>>> done"
 fi
 
