@@ -8,6 +8,7 @@
 
 SP_IMB_BUILD=$(BUILD_DIR)/$(SP_IMB_PKG)
 SP_IMB_OUT=$(SP_IMB_BUILD)/out
+SP_BUILD_SOURCECODE=
 
 define download_build_tools
 	@cd $(SP_IMB_BUILD); \
@@ -129,7 +130,10 @@ endef
 sp_build: check_mktool check_qemu_arm64 check_native
 	@mkdir -p $(SP_IMB_DL_DIR)
 	@mkdir -p $(SP_IMB_OUT)
-	$(if $(SP_IMB_SRC_BUILD),$(call build_source),$(call download_prebuilt_kernel))
+	@if [ "$(SP_IMB_SRC_BUILD)" == "y" ]; then \
+		SP_BUILD_SOURCECODE=y; \
+	fi
+	$(if $(SP_BUILD_SOURCECODE),$(call build_source),$(call download_prebuilt_kernel))
 	$(if $(BR2_SP_TARGET_ROOTFS_NATIVE),$(call use_native_rootfs))
 	$(if $(BR2_SP_TARGET_ROOTFS_64_RPI_202209_DESKTOP),$(call use_ext_rootfs,rpi))
 	$(if $(BR2_SP_TARGET_ROOTFS_64_RPI_202209_LITE),$(call use_ext_rootfs,rpi))
@@ -163,7 +167,7 @@ check_qemu_arm64:
 check_native:
 	@if [ "$(BR2_SP_TARGET_ROOTFS_NATIVE)" == "y" ]; then \
 		echo ">>> build rootfs"; \
-		make; \
+		make || exit 1; \
 		echo "<<< build done"; \
 	fi
 
@@ -176,14 +180,11 @@ sp_clean:
 	rm $(SP_IMB_DL_DIR)/*.download
 
 sp_test:
+	@echo SP_IMB_KERNEL_FILE=$(SP_IMB_KERNEL_FILE)
 	@echo SP_IMB_SRC_BUILD=$(SP_IMB_SRC_BUILD)
-	@echo SP_IMB_OUT=$(SP_IMB_OUT)
-	@echo SP_IMB_BUILD_FILE=$(SP_IMB_BUILD_FILE)
-	@echo SP_IMB_SDCARD_DIR=$(SP_IMB_SDCARD_DIR)
-	@echo SP_IMB_BUILD=$(SP_IMB_BUILD)
-	@echo SP_IMB_BOARD=$(SP_IMB_BOARD)
-	@echo SP_IMB_BOOT_TYPE=$(SP_IMB_BOOT_TYPE)
-	@echo SP_IMB_ISP_BOARD=$(SP_IMB_ISP_BOARD)
+	@echo SP_IMB_KERNEL_VER=$(SP_IMB_KERNEL_VER)
+	@echo BR2_SP_ROOTFS_REPO_URL=$(BR2_SP_ROOTFS_REPO_URL)
+	@echo SP_IMB_KERNEL_VER=$(SP_IMB_KERNEL_VER)
 
 define get_evboard
 	ifeq ($(BR2_SP_BOARD_SP7350),y)
@@ -204,16 +205,19 @@ endef
 define get_kernel
 	ifeq ($(BR2_SP_LINUX_KERNEL_510),y)
 	$(1) = kernel510
+	$(2) = n
 	else ifeq ($(BR2_SP_LINUX_BUILD_KERNEL_510),y)
 	$(1) = kernel510
 	$(2) = y
 	else ifeq ($(BR2_SP_LINUX_KERNEL_54),y)
 	$(1) = kernel54
+	$(2) = n
 	else ifeq ($(BR2_SP_LINUX_BUILD_KERNEL_54),y)
 	$(1) = kernel54
 	$(2) = y
 	else ifeq ($(BR2_SP_LINUX_KERNEL_419),y)
 	$(1) = kernel419
+	$(2) = n
 	else ifeq ($(BR2_SP_LINUX_BUILD_KERNEL_419),y)
 	$(1) = kernel419
 	$(2) = y
